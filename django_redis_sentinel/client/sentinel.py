@@ -57,7 +57,7 @@ class SentinelClient(DefaultClient):
         # Create connection factory for Sentinels
         self.connection_factory = pool.get_connection_factory(options=self._options)
 
-    def get_client(self, write=True, tried=(), show_index=False):
+    def get_client(self, write=True):
         """
         Method used for obtain a raw redis client.
 
@@ -72,18 +72,12 @@ class SentinelClient(DefaultClient):
             force_slave:
             **kwargs:
         """
-        index = self.get_next_client_index(write=write, tried=tried or [])
+        index = self.get_next_client_index(write=write)
 
         if write:
-            if show_index:
-                return self.connect(master=True), index
-            else:
-                return self.connect(master=True)
+            return self.connect(master=True)
         else:
-            if show_index:
-                return self.connect(master=False), index
-            else:
-                return self.connect(master=False)
+            return self.connect(master=False)
 
     def connect(self, master=True, force_slave=False):
         """
