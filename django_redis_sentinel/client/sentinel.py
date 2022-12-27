@@ -3,10 +3,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import socket
+from typing import Optional, List
 
 from django.core.cache.backends.base import get_key_func
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.module_loading import import_string
 from django_redis.client.default import DefaultClient
 from redis.exceptions import ConnectionError
 
@@ -57,7 +57,12 @@ class SentinelClient(DefaultClient):
         # Create connection factory for Sentinels
         self.connection_factory = pool.get_connection_factory(options=self._options)
 
-    def get_client(self, write=True):
+    def get_client(
+            self,
+            write: bool = True,
+            tried: Optional[List[int]] = None,
+            show_index: bool = False,
+    ):
         """
         Method used for obtain a raw redis client.
 
@@ -67,16 +72,16 @@ class SentinelClient(DefaultClient):
 
         If read always looks for a slave (round-robin algorithm, with fallback to master if none available)
         If write then it looks for master
-
-        Args:
-            force_slave:
-            **kwargs:
         """
-        index = self.get_next_client_index(write=write)
+        index = self.get_next_client_index(write=write, tried=tried)
 
         if write:
+            if show_index:
+                return self.connect(master=True), index
             return self.connect(master=True)
         else:
+            if show_index:
+                return self.connect(master=False, force_slave=True), index
             return self.connect(master=False)
 
     def connect(self, master=True, force_slave=False):

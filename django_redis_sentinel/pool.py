@@ -8,7 +8,7 @@ from redis.sentinel import Sentinel
 def get_connection_factory(path=None, options=None):
     if path is None:
         path = getattr(settings, "DJANGO_REDIS_CONNECTION_FACTORY",
-                       "sentinel.pool.SentinelConnectionFactory")
+                       "django_redis_sentinel.pool.SentinelConnectionFactory")
 
     cls = import_string(path)
     return cls(options or {})
