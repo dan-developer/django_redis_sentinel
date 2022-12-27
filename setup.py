@@ -7,10 +7,10 @@ Full featured redis cache backend for Django for Sentinel Redis Clusters.
 """
 
 setup(
-    name="django-redis-sentinel-redux",
-    url="https://github.com/danigosa/django-redis-sentinel-redux",
-    author="Dani Gonzalez @danigosa",
-    author_email="danigosa@gmail.com",
+    name="django_redis_sentinel",
+    url="https://github.com/dan-developer/django_redis_sentinel",
+    author="Dan Developer",
+    author_email="and.dan19@gmail.com",
     version=__version__,
     packages=[
         "django_redis_sentinel",
